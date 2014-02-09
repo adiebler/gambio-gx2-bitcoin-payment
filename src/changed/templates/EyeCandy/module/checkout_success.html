@@ -1,0 +1,98 @@
+{load_language_text section="checkout_success"}
+{config_load file="$language/gm_lang_$language.conf" section="lightbox"}
+{load_language_text section="buttons" name="button"}
+
+<!-- THANK YOU -->
+{if $LIGHTBOX == 'true'}<div id="lightbox_content" style="display:none">{/if}
+	<div class="order_thanks{if $LIGHTBOX == 'true'} lightbox_block{/if}">
+		{if $LIGHTBOX == 'true'}
+			<div style="position:relative;">
+				<div class="lightbox_close"><a href="{$LIGHTBOX_CLOSE}" class="icon_lightbox_close" title="{$button.close}">&nbsp;</a></div>
+			</div>
+		{/if}
+
+		{$FORM_ACTION}
+
+		<h1>{$txt.title_success}</h1>
+		<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/order_success.png" alt="" />{$txt.heading_success}</h2>
+		<div class="order_success_text">
+			<p>{$txt.text_success}</p>
+
+			{*zmb clickandbuy*}
+			{if $cbsc_status}
+				{if $cbsc_status == 'success' && $cbsc_result.isCommitted == 1}
+				<div class="heading_success">
+					{$txt.heading_success}
+				</div>
+				<div class="content">
+					{$txt.text_success}
+				</div>
+				{else}
+				  <div class="contentsTopics" valign="top">
+				  {$txt.heading_cnb_error}
+				  </div>
+				  <div class="main" valign="top">{$txt.text_cnb_error}</div>
+				{/if}
+			{/if}
+			{*zmb clickandbuy end*}
+		</div>
+
+        <!-- Bitcoin Payment - Commerce Coding - BEGIN -->
+		{if $smarty.session.bitcoin_address}
+		<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/payment.png" alt="" />Bitcoin Information</h2>
+		<div class="order_success_text">
+		  <p>Adresse: {$smarty.session.bitcoin_address}<br />Betrag: {$smarty.session.bitcoin_amount}</p>
+		  <p><img src="https://blockchain.info/de/qr?data={$smarty.session.bitcoin_address}&size=200"></p>
+		</div>
+		{/if}
+        <!-- Bitcoin Payment - Commerce Coding - END -->
+
+		<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/order_print.png" alt="" />{$txt.title_printorder}</h2>
+		<div class="order_success_text">
+			<p>{$txt.text_printorder} <a href="{$BUTTON_PRINT_URL}" class="button_blue button_set button_print_order" target="_blank"><span class="button-outer"><span class="button-inner">{$button.print}</span></span></a></p>
+			{if $TS_RATING}
+			<p><br />{$TS_RATING}</p>
+			{/if}
+			<div class="content">
+			{if $GV_SEND_LINK}
+				<p>
+				<!--GV Code Start-->
+					{$txt.gv_has_vouchera}{$GV_SEND_LINK}{$txt.gv_has_voucherb}
+				<!--GV Code End-->
+				</p>
+			{/if}
+			</div>
+
+			<!-- Google Conversion-tracking start !-->
+			{if $google_tracking eq 'true'}
+				{$tracking_code}
+			{/if}
+			<!-- Google Conversion-tracking end !-->
+
+			{if $downloads_content neq ''}
+				<br />{$downloads_content}
+			{/if}
+		</div>
+
+		<p class="thanks">{$txt.text_thankyou}</p>
+
+		{$FORM_END}
+
+		{$NC_SUCCESS_INFO}
+
+		{if $TRUSTED_BLOCK}
+		<div class="checkout_success_trusted">
+			{$TRUSTED_BLOCK}
+		</div>
+		{/if}
+
+
+		{if $GOOGLE_ANALYTICS_CODE != '0'}
+			{$GOOGLE_ANALYTICS_CODE}
+		{/if}
+
+	</div>
+{if $LIGHTBOX == 'true'}
+	<a href="{$LIGHTBOX_CLOSE}" class="icon_lightbox_close_checkout" title="{$button.close}">{$button.close}</a>
+</div>
+{/if}

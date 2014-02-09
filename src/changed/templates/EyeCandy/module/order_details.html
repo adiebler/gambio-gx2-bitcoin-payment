@@ -1,0 +1,98 @@
+{load_language_text section="order_details"}
+{load_language_text section="buttons" name="button"}
+
+
+    <table cellspacing="0" class="shopping_cart_list">
+        <tr class="row_0 first">
+            <th>&nbsp;</th>
+            <th class="col_1">{$txt.text_article}</th>
+            <th class="col_2">{$txt.text_qty}</th>
+            <th class="col_3">{$txt.text_single}</th>
+            <th class="col_4">{$txt.text_total}</th>
+        </tr>
+
+        {foreach name=cart item=module_data from=$content_data.module_content}
+        <tr class="{if $smarty.foreach.cart.last}last-article{else}article{/if}">
+            <td class="col_0">{if $module_data.PRODUCTS_IMAGE!=''}<a href="{$module_data.PRODUCTS_LINK}"><img src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.IMAGE_ALT}" /></a>{/if}</td>
+            <td class="col_1">
+				<a href="{$module_data.PRODUCTS_LINK}" class="strong" rel="nofollow">{$module_data.PRODUCTS_NAME}</a><br/>
+				{if $module_data.PRODUCTS_MODEL != "" && $module_data.SHOW_PRODUCTS_MODEL == "true"}{$txt.text_model} {$module_data.PRODUCTS_MODEL}<br/>{/if}
+				{if $module_data.GM_WEIGHT != '0'}{$txt.text_weight} {$module_data.GM_WEIGHT}{$txt.text_weight_unit}<br/>{/if}
+				{if $module_data.PRODUCTS_SHIPPING_TIME != ""}{$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}<br/>{/if}
+
+				{if $module_data.ATTRIBUTES != ''}
+					{foreach key=key_data item=item_data from=$module_data.ATTRIBUTES}
+						{$item_data.NAME}: {$item_data.VALUE_NAME}<br />
+					{/foreach}
+				{/if}
+				{$module_data.PROPERTIES}
+				<div id="gm_checker_error_{$module_data.PRODUCTS_ID}" class="cart_error_color"></div>
+			</td>
+            <td class="col_2">
+                <input type="text" name="{$module_data.PRODUCTS_QTY_INPUT_NAME}" value="{$module_data.PRODUCTS_QTY_VALUE}" style="width:30px; text-align:right" size="2" class="input-text gm_cart_data" />&nbsp;{if $module_data.UNIT}{$module_data.UNIT}&nbsp;{/if}
+                <input type="hidden" name="{$module_data.PRODUCTS_ID_INPUT_NAME}" value="{$module_data.PRODUCTS_ID_EXTENDED}" class="gm_cart_data" />
+                <input type="hidden" name="{$module_data.PRODUCTS_OLDQTY_INPUT_NAME}" value="{$module_data.PRODUCTS_QTY_VALUE}" />
+				
+                <a class="button_cart_refresh" href="{page_url}#"><img class="png-fix" src="{$tpl_path}img/icons/icon-refresh.png" title="{$button.update}" alt="{$button.update}" /></a>&nbsp;
+                <a class="button_cart_delete" href="{page_url}#" rel="{$module_data.PRODUCTS_ID_EXTENDED}"><img class="png-fix" src="{$tpl_path}img/icons/icon-delete.png" title="{$button.delete}" alt="{$button.delete}" /></a>
+            </td>
+            <td class="col_3">{$module_data.PRODUCTS_SINGLE_PRICE}</td>
+            <td class="col_4">{$module_data.PRODUCTS_PRICE}</td>
+        </tr>
+        {/foreach}
+        <tr>
+            <td colspan="3" class="col_0 order-total">
+				{$content_data.MODULE_gift_cart}				
+            </td>
+			<td colspan="2" valign="top" align="right" class="order-total">
+				<table width="100%" cellspacing="0">
+					<tr class="calculation">
+						<td class="col_1">{$txt.text_subtotal}</td>
+						<td class="col_2">{$content_data.SUBTOTAL}</td>
+					</tr>
+					{if $content_data.DISCOUNT_VALUE}
+						<tr class="calculation">
+							<td class="col_1">{$content_data.DISCOUNT_TEXT}</td>
+							<td class="col_2">{$content_data.DISCOUNT_VALUE}</td>
+						</tr>
+					{/if}
+					{if !$content_data.TAX_FREE_TEXT}
+						{foreach name=tax item=tax_item from=$content_data.tax_data}
+							<tr class="calculation{if $smarty.foreach.tax.last} doubleunderline{/if}">
+								<td class="col_1">{$tax_item.TEXT}:</td>
+								<td class="col_2">{$tax_item.VALUE}</td>
+							</tr>
+						{/foreach}
+					{/if}
+					<tr class="calculation total">
+						<td class="col_1">{$txt.text_sum}</td>
+						<td class="col_2">
+							{$content_data.TOTAL}
+							{if $content_data.SHIPPING_INFO && !$content_data.TAX_FREE_TEXT}<div class="shipping-text">{$content_data.TAX_FREE_TEXT} {$content_data.SHIPPING_INFO}</div>{/if}
+						</td>
+					</tr>
+                    <!-- Bitcoin Payment - Commerce Coding - BEGIN -->
+					{if $content_data.BITCOIN_PRICE}
+					<tr class="calculation total">
+						<td class="col_2" colspan="2" valign="top">
+							{$content_data.BITCOIN_PRICE}<br />
+						</td>
+					</tr>
+					{/if}
+                    <!-- Bitcoin Payment - Commerce Coding - END -->
+					{if $content_data.TAX_FREE_TEXT}
+					<tr class="calculation total">
+						<td class="col_2" colspan="2" valign="top">
+							{if $content_data.SHIPPING_INFO}<span class="shipping-text">{$content_data.TAX_FREE_TEXT} {$content_data.SHIPPING_INFO}</span>{/if}
+						</td>
+					</tr>
+					{/if}
+				</table>
+
+			</td>
+		</tr>
+    </table>
+
+	{* value will be set via ButtonCartDeleteHandler *}
+	<input id="field_cart_delete_products_id" type="hidden" name="cart_delete[]" value="" />
+    <br />

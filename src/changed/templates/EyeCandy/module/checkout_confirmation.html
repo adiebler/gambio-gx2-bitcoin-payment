@@ -1,0 +1,112 @@
+{load_language_text section="checkout_confirmation"}
+{load_language_text section="buttons" name="button"}
+{config_load file="$language/gm_lang_$language.conf" section="lightbox"}
+
+<!-- ORDER CONFIRMATION -->
+{if $LIGHTBOX == 'true'}<div id="lightbox_content" style="display:none">{/if}
+	<div class="order_confirm{if $LIGHTBOX == 'true'} lightbox_block{/if}">
+		<div class="process_bar">
+			<ul>
+				<li><label><span>{$txt.text_shoppingcart}</span></label></li>
+				<li><label><span>{$txt.text_yourdata}</span></label></li>
+				<li><label><span>{$txt.text_ordershipping}</span></label></li>
+				<li class="active"><label><span>{$txt.text_orderconfirm}</span></label></li>
+			</ul>
+		</div>
+		<h1>{$txt.heading_confirmation}</h1>
+
+		<div class="text_information">
+		{if $ERROR}
+			{$ERROR}
+		{else}
+			{$txt.text_confirm_information}
+		{/if}
+		</div>
+
+		{if $GM_LOG_IP =='1' && ($GM_CONFIRM_IP =='1' || $GM_SHOW_IP =='1')}
+			<div class="text_information">
+				{if $GM_CONFIRM_IP =='1'}
+					{$GM_CONFIRM_IP_CHECK} {$txt.text_confirm_log_ip} {$CUSTOMERS_IP}
+				{/if}
+			</div>
+		{/if}
+
+
+		<div class="cols2">
+			<div class="col">
+				<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/address.png" alt="" /> {$txt.text_shipping_address} <a class="conditions_info_link" href="{$SHIPPING_ADDRESS_EDIT}">{$txt.text_edit}</a></h2>
+				<p>{$DELIVERY_LABEL}</p>
+
+			</div>
+			<div class="col last">
+				<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/address.png" alt="" /> {$txt.text_payment_address} <a class="conditions_info_link" href="{$BILLING_ADDRESS_EDIT}">{$txt.text_edit}</a></h2>
+				<p>{$BILLING_LABEL}</p>
+			</div>
+		</div>
+
+
+		{if $PAYMENT_METHOD!='' && $BILLING_LABEL}
+			<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/payment.png" alt="" /> {$txt.text_payment_method} <a class="conditions_info_link" href="{$PAYMENT_EDIT}">{$txt.text_edit}</a></h2>
+			<p>{$PAYMENT_METHOD}</p>
+		{/if}
+
+		{if $PAYMENT_INFORMATION!='' && $BILLING_LABEL}
+			<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/payment.png" alt="" /> {$txt.text_payment_info} <a class="conditions_info_link" href="{$PAYMENT_EDIT}">{$txt.text_edit}</a></h2>
+			<p>{$PAYMENT_INFORMATION}</p>
+		{/if}
+
+		{if $ORDER_COMMENTS != ''}
+			<h2 class="underline overline"><img class="png-fix" src="{$tpl_path}img/icons/comments.png" alt="" /> {$txt.text_comments}  <a class="conditions_info_link" href="{$PAYMENT_EDIT}">{$txt.text_edit}</a></h2>
+			<p>{$ORDER_COMMENTS}</p>
+		{/if}
+
+
+
+		<h2 class="underline overline" style="margin-bottom:0"><img class="png-fix" src="{$tpl_path}img/icons/products.png" alt="" /> {$txt.text_products} <a class="conditions_info_link" href="{$PRODUCTS_EDIT}">{$txt.text_edit}</a></h2>
+
+		<table cellspacing="0" class="shopping_cart_list">
+			{$PRODUCTS_TABLE_PART}
+
+			<tr class="calculation">
+				<td colspan="2" class="col_0" rowspan="10">
+					<ul class="arrows">
+						{if $PRIVACY_CONFIRMATION}<li><a href="{$PRIVACY_CONFIRMATION_URL}" target="_blank" class="conditions_info_link lightbox_iframe">{$PRIVACY_CONFIRMATION_TEXT}</a></li>{/if}
+						{if $CONDITIONS_CONFIRMATION}<li><a href="{$CONDITIONS_CONFIRMATION_URL}" target="_blank" class="conditions_info_link lightbox_iframe">{$CONDITIONS_CONFIRMATION_TEXT}</a></li>{/if}
+						{if $WITHDRAWAL_CONFIRMATION}<li><a href="{$WITHDRAWAL_CONFIRMATION_URL}" target="_blank" class="conditions_info_link lightbox_iframe">{$WITHDRAWAL_CONFIRMATION_TEXT}</a></li>{/if}
+					</ul>
+				</td>
+			</tr>
+			{$TOTAL_BLOCK_TABLE_PART}
+
+			{foreach name=total_block item=total_item_array from=$total_block_data}
+				<tr class="calculation{if $smarty.foreach.total_block.last} total{/if}">
+					<td class="col_1">{$total_item_array.title}</td>
+					<td class="col_2">{$total_item_array.text}</td>
+				</tr>
+			{/foreach}
+            <!-- Bitcoin Payment - Commerce Coding - BEGIN -->
+			{if $BITCOIN_PRICE}
+			<tr class="calculation total">
+				<td class="col_2" colspan="2">{$BITCOIN_PRICE}</td>
+			</tr>
+			{/if}
+            <!-- Bitcoin Payment - Commerce Coding - END -->
+		</table>
+
+		{$CHECKOUT_FORM_PREFORM}
+		<div style="margin-top: 30px">
+			<form action="{$CHECKOUT_FORM_ACTION_URL}" method="post">
+
+				{if $MODULE_BUTTONS!=''}{$MODULE_BUTTONS}{/if}
+
+				{* TODO: write action_page_back handler *}
+				<div class="back_button"><a href="{'checkout_payment.php'|xtc_href_link:'':'SSL'}" class="button_grey_big button_set_big action_page_back"><span class="button-outer"><span class="button-inner">{$button.back}</span></span></a></div>
+
+				<div class="checkout_button"><a href="{page_url}#" class="button_green_big button_set_big action_submit"><span class="button-outer"><span class="button-inner">{$button.send_order}</span></span></a></div>
+			</form>
+		</div>
+	</div>
+{if $LIGHTBOX == 'true'}
+	<a href="{$LIGHTBOX_CLOSE}" class="icon_lightbox_close_checkout button_close_lightbox" title="{$button.close}">{$button.close}</a>
+</div>
+{/if}

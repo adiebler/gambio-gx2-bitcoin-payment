@@ -1,0 +1,200 @@
+{load_language_text section="product_info"}
+{load_language_text section="buttons" name="button"}
+
+{if $PRODUCT_NAVIGATOR}
+	{$PRODUCT_NAVIGATOR}
+{/if}
+
+<div class="details clearfix" id="product_info">
+	<form name="{$FORM_NAME}" id="{$FORM_NAME}" action="{$FORM_ACTION_URL}" method="{$FORM_METHOD}">
+		<div>
+			<div class="gallery clearfix">
+
+				<div class="inside">
+					<div class="stage button_lightbox_gallery">
+						{gm_gmotion}
+						{if $images.0.IMAGE}
+						<div class="info_image_box" style="margin: 0 auto 0 auto; width: {$images.0.WIDTH}px;">
+							<a href="{$images.0.ZOOM_IMAGE}" title="">
+							{if $GMOTION == '0'}
+								<img id="gallery_inside_main_1" src="{$images.0.IMAGE}" alt="{$images.0.IMAGE_ALT|default:$images.0.PRODUCTS_NAME}" title="{$images.0.IMAGE_ALT|default:$images.0.PRODUCTS_NAME}" />
+							{/if}
+							</a>
+						</div>
+						{/if}
+					</div>
+					{if $thumbnails|@count > 1}
+					<div class="thumbnails">
+						{foreach name=thumbnails item=thumbnails_data from=$thumbnails}
+							<div class="thumbnail"><a href="{$thumbnails_data.INFO_IMAGE}" rel="{$thumbnails_data.ZOOM_IMAGE}" class="button_product_images button_lightbox_gallery {if $smarty.foreach.thumbnails.first} active_thumbnail{/if}" id="gallery_inside_thumbnail_{$smarty.foreach.thumbnails.iteration}" title="{$thumbnails_data.IMAGE_ALT|default:$thumbnails_data.PRODUCTS_NAME}"><img style="padding-left: {$thumbnails_data.PADDING_LEFT}px; padding-top: {$thumbnails_data.PADDING_TOP}px;" src="{$thumbnails_data.IMAGE}" alt="{$thumbnails_data.IMAGE_ALT|default:$thumbnails_data.PRODUCTS_NAME}" title="{$thumbnails_data.IMAGE_ALT|default:$thumbnails_data.PRODUCTS_NAME}" /></a></div>
+						{/foreach}
+					</div>
+					{/if}
+				</div>
+				{if $MODULE_products_media != ''}
+					{$MODULE_products_media}
+				{/if}
+			</div>
+			<div class="info clearfix">
+				<div class="inside">
+					<h1>{$PRODUCTS_NAME}</h1>
+					<dl>
+					{if $PRODUCTS_MODEL!='' || $SHOW_PRODUCTS_MODEL}
+						<dt>{$txt.text_model}</dt>
+						<dd class="products_model">{$PRODUCTS_MODEL}</dd>
+					{/if}
+					{if $SHIPPING_NAME || $SHOW_SHIPPING_TIME}
+						<dt>{$txt.text_shippingtime}</dt>
+						<dd class="shipping_time">{if $SHIPPING_IMAGE}<img src="{$SHIPPING_IMAGE}" alt="{$SHIPPING_NAME}" />{/if} <span class="products_shipping_time_value">{$SHIPPING_NAME}</span></dd>
+					{/if}
+					{if $PRODUCTS_QUANTITY > 0 || $SHOW_PRODUCTS_QUANTITY}
+						<dt>{$txt.text_stock}</dt>
+						<dd class="products_quantity"><span class="products_quantity_value">{$PRODUCTS_QUANTITY}</span> {if $PRODUCTS_QUANTITY_UNIT}{$PRODUCTS_QUANTITY_UNIT}{else}{$txt.text_pieces}{/if}</dd>
+					{/if}
+					</dl>
+					
+					{$properties_selection_form}
+					{$MODULE_product_options}
+					<div id="gm_attribute_images"></div>
+
+					{if $PRODUCTS_FSK18=='true'}
+						<div id="fsk18_image"><img src="{$tpl_path}img/fsk18.gif" alt="" /></div>
+					{/if}
+
+					{gm_gprint position=1 margin_left=0}
+					{gm_gprint position=2 margin_left=0}
+					{gm_gprint position=3 margin_left=0}
+
+					{if $MODULE_graduated_price != ''}
+						{$MODULE_graduated_price}
+					{/if}
+
+					<div class="price-container">
+						<div class="inside">
+							<span class="price" id="gm_attr_calc_price">{$PRODUCTS_PRICE}{if $PRODUCTS_VPE}<br /><span class="tax-shipping-text gm_products_vpe">{$PRODUCTS_VPE}</span><br />{/if}</span>{if !$PRODUCTS_VPE}<br />{/if}
+							<!-- Bitcoin Payment - Commerce Coding - BEGIN -->
+							{if $BITCOIN_PRICE}{$BITCOIN_PRICE}<br />{/if}
+                            <!-- Bitcoin Payment - Commerce Coding - END -->
+							{if $ADD_CART_BUTTON}
+							<span class="tax-shipping-text">{$PRODUCTS_TAX_INFO}{$PRODUCTS_SHIPPING_LINK}</span><br />
+							<br />							
+							<div id="details_cart_part" style="{if $GM_GPRINT} display: none;{/if}">
+								{if $QUANTITY}<input type="text" id="gm_attr_calc_qty" name="products_qty" class="article-count-input numeric input-text big" value="{$QUANTITY}"{if $DISABLED_QUANTITY} disabled="disabled"{/if} />&nbsp;{/if}<a href="{page_url}#" id="cart_button" class="button_green_big button_set_big button_details_add_cart"><span class="button-outer"><span class="button-inner"><img class="png-fix" src="{$tpl_path}img/icons/icon-white-shoppingcart.png" alt="" style="margin-right:10px; float:left" />{$button.add_to_cart}</span></span></a>
+								{if $ADD_WISHLIST_BUTTON}<div class="leaflet"><a href="{page_url}#" id="gm_wishlist_link" class="button_details_add_wishlist">{$button.add_to_wishlist}</a></div>{/if}
+								<input type="hidden" name="products_id" id="gm_products_id" value="{$PRODUCTS_ID}" />
+								<input type="hidden" name="submit_target" value="cart" />
+								<div id="details_qty_advice">
+									<div id="gm_checker_error_{$PRODUCTS_ID}">
+									{if $GM_MIN_ORDER}
+										{$txt.text_min_order}<span class="details_qty_advice_bold">{$GM_MIN_ORDER}</span><br />
+									{/if}
+									{if $GM_GRADUATED_QTY}
+										{$txt.text_graduated_qty_1}<span class="details_qty_advice_bold">{$GM_GRADUATED_QTY}</span>{$txt.text_graduated_qty_2}
+									{/if}
+									</div>
+								</div>
+								{if $SHOW_PRODUCTS_WEIGHT}
+								<div id="details_products_weight">
+									{$txt.text_weight} <span id="gm_calc_weight">{$PRODUCTS_WEIGHT}</span> {$txt.text_weight_unit}
+								</div>
+								{/if}
+							</div>
+							{else}
+								<input type="hidden" name="products_id" id="gm_products_id" value="{$PRODUCTS_ID}" />
+							{/if}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="clear: both"> <!-- --> </div>
+		</div>
+		{if $SHOW_BOOKMARKING || $SHOW_PRINT || $GM_PRICE_OFFER!='' || $GM_TELL_A_FRIEND || $SHOW_FACEBOOK || $SHOW_TWITTER || $SHOW_GOOGLEPLUS || $SHOW_PINTEREST}
+		<div class="actions">
+			{if $SHOW_BOOKMARKING}
+				<a class="addthis_button" href="http://www.addthis.com/bookmark.php" rel="nofollow"><img class="png-fix" src="{$tpl_path}img/icons/icon-bookmark.png" alt="" /> &nbsp; {$txt.text_bookmarking}</a>
+			{/if}
+			{if $SHOW_PRINT}
+				<a href="{page_url}#" class="button_print" rel="nofollow"><img class="png-fix" src="{$tpl_path}img/icons/icon-print.png" alt="" /> &nbsp; {$txt.text_print}</a>
+			{/if}
+			{if $GM_PRICE_OFFER!=''}
+				<a href="{page_url}#" id="gm_price_offer" class="button_price_offer" rel="nofollow"><img class="png-fix" src="{$tpl_path}img/icons/price_offer.png" alt="" /> &nbsp; {$txt.text_price_offer}</a>
+			{/if}
+			{if $GM_TELL_A_FRIEND}
+				<a href="{page_url}#" id="gm_tell_a_friend" class="button_tell_a_friend" rel="nofollow"><img class="png-fix" src="{$tpl_path}img/icons/tell_a_friend.png" alt="" /> &nbsp; {$txt.text_tell_a_friend}</a>
+			{/if}
+			{if $SHOW_FACEBOOK || $SHOW_TWITTER || $SHOW_GOOGLEPLUS || $SHOW_PINTEREST}
+                <div class="social_share_wrapper">
+                    {if $SHOW_FACEBOOK}
+                        <div class="social_share_box" id="facebook_share_box">
+                            <div class="social_share_image"></div>
+                            <div class="social_share_content"><img src="templates/EyeCandy/img/social_share_dummy_facebook.png" title="Facebook" /></div>
+                            <div style="clear: both"> <!-- --> </div>
+                        </div>
+                    {/if}
+                    {if $SHOW_TWITTER}
+                    <div class="social_share_box" id="twitter_share_box">
+                        <div class="social_share_image"></div>
+                        <div class="social_share_content"><img src="templates/EyeCandy/img/social_share_dummy_twitter.png" title="Twitter" /></div>
+                        <div style="clear: both"> <!-- --> </div>
+                    </div>
+                    {/if}
+                    {if $SHOW_GOOGLEPLUS}
+                    <div class="social_share_box" id="googleplus_share_box">
+                        <div class="social_share_image"></div>
+                        <div class="social_share_content"><img src="templates/EyeCandy/img/social_share_dummy_googleplus.png" title="Google +1" /></div>
+                        <div style="clear: both"> <!-- --> </div>
+                    </div>
+                    {/if}
+                    {if $SHOW_PINTEREST}
+                    <div class="social_share_box" id="pinterest_share_box">
+                        <div class="social_share_image"></div>
+                        <div class="social_share_content"><img src="templates/EyeCandy/img/social_share_dummy_pinterest.png" title="Pinterest" /></div>
+                        <div style="clear: both"> <!-- --> </div>
+                    </div>
+                    {/if}
+                    <div style="clear: both"> <!-- --> </div>
+                </div>
+            {/if}
+            
+			{if $SHOW_BOOKMARKING}
+				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js"></script>
+			{/if}
+		</div>
+		{/if}
+		{$SHOPGATE_QR_BOX}
+		<div class="description tabs">
+			<div id="description-1">
+				<p>
+					{if $PRODUCTS_DESCRIPTION !=''}{$PRODUCTS_DESCRIPTION}{/if}					
+				</p>
+			</div>
+		</div>		
+	</form>
+	{if $MODULE_products_reviews != ''}
+		{$MODULE_products_reviews}
+	{/if}
+</div>
+
+{if $MODULE_cross_selling != ''}
+    {$MODULE_cross_selling}
+{/if}
+
+{if $MODULE_reverse_cross_selling != ''}
+	{$MODULE_reverse_cross_selling}
+{/if}
+
+{if $MODULE_also_purchased != ''}
+	{$MODULE_also_purchased}
+{/if}
+
+{if $PRODUCTS_ADDED != ''}
+	<div id="products_added">{$PRODUCTS_ADDED}</div>
+{/if}
+
+{if $PRODUCTS_URL != ''}
+	<div class="details_products_url">{$PRODUCTS_URL}</div>
+{/if}
+
+{if $PRODUCTS_DATE_AVIABLE != ''}
+	<div class="details_products_date_avaiable">{$PRODUCTS_DATE_AVIABLE}</div>
+{/if}
